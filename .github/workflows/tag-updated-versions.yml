@@ -1,0 +1,23 @@
+name: Tag Updated Versions
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  tag-updated-versions:
+    name: Tag Updated Versions
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: env
+      - run: node .github/scripts/tag-updated-versions/dist/index.js
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
