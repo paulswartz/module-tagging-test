@@ -32253,6 +32253,7 @@ __nccwpck_require__.r(__webpack_exports__);
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_8__ = __nccwpck_require__(5438);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_8__);
+var _a;
 
 
 
@@ -32263,8 +32264,9 @@ __nccwpck_require__.r(__webpack_exports__);
 
 
 const exec = (0,util__WEBPACK_IMPORTED_MODULE_4__.promisify)(child_process__WEBPACK_IMPORTED_MODULE_3__.exec);
+const headSha = (_a = process__WEBPACK_IMPORTED_MODULE_2__.env.GITHUB_SHA) !== null && _a !== void 0 ? _a : 'HEAD';
 async function createRelease(moduleName, version, commits) {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d;
     const tagName = `${moduleName}/${version}`;
     const body = commits
         .map((c) => c.header)
@@ -32285,11 +32287,11 @@ async function createRelease(moduleName, version, commits) {
             draft: false,
             prerelease: false,
             make_latest: 'false',
-            target_commitish: (_d = process__WEBPACK_IMPORTED_MODULE_2__.env.GITHUB_SHA) !== null && _d !== void 0 ? _d : 'HEAD'
+            target_commitish: headSha
         });
     }
     catch (error) {
-        const message = (_e = error.message) !== null && _e !== void 0 ? _e : 'Unknown error';
+        const message = (_d = error.message) !== null && _d !== void 0 ? _d : 'Unknown error';
         _actions_core__WEBPACK_IMPORTED_MODULE_7__.setFailed(`Failed to create release for ${tagName}: ${message}`);
     }
     return null;
@@ -32316,7 +32318,7 @@ async function gitTags(root, moduleName) {
     return ls.stdout.trimEnd().split('\n').map((t) => t.slice(moduleName.length + 1));
 }
 async function commitsSince(root, moduleName, version) {
-    const ls = await exec(`git log -z --no-decorate --pretty=medium ${moduleName}/${version}...HEAD -- ${moduleName}`, { cwd: root });
+    const ls = await exec(`git log -z --no-decorate --pretty=medium ${moduleName}/${version}...${headSha} -- ${moduleName}`, { cwd: root });
     if (ls.stdout === '') {
         return [];
     }

@@ -10,6 +10,8 @@ import * as github from '@actions/github'
 
 const exec = promisify(execCallback)
 
+const headSha = env.GITHUB_SHA ?? 'HEAD'
+
 async function createRelease (moduleName: string, version: string, commits: Commit[]): Promise<null> {
   const tagName = `${moduleName}/${version}`
   const body = commits
@@ -31,7 +33,7 @@ async function createRelease (moduleName: string, version: string, commits: Comm
       draft: false,
       prerelease: false,
       make_latest: 'false',
-      target_commitish: env.GITHUB_SHA ?? 'HEAD'
+      target_commitish: headSha
     })
   } catch (error: any) {
     const message: string = error.message ?? 'Unknown error'
@@ -63,7 +65,7 @@ async function gitTags (root: string, moduleName: string): Promise<string[]> {
 }
 
 async function commitsSince (root: string, moduleName: string, version: string): Promise<Commit[]> {
-  const ls = await exec(`git log -z --no-decorate --pretty=medium ${moduleName}/${version}...HEAD -- ${moduleName}`,
+  const ls = await exec(`git log -z --no-decorate --pretty=medium ${moduleName}/${version}...${headSha} -- ${moduleName}`,
     { cwd: root })
   if (ls.stdout === '') {
     return []
