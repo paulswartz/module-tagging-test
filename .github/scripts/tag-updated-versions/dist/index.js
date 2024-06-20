@@ -32315,6 +32315,9 @@ function bumpType(commit) {
 }
 async function gitTags(root, moduleName) {
     const ls = await exec(`git tag -l "${moduleName}/*"`, { cwd: root });
+    if (ls.stdout === '') {
+        return [];
+    }
     return ls.stdout.trimEnd().split('\n').map((t) => t.slice(moduleName.length + 1));
 }
 async function commitsSince(root, moduleName, version) {
@@ -32355,6 +32358,10 @@ _actions_core__WEBPACK_IMPORTED_MODULE_7__.info(`Git root: ${root}`);
 for (const moduleName of await moduleNames(root)) {
     _actions_core__WEBPACK_IMPORTED_MODULE_7__.startGroup(`Looking at ${moduleName}`);
     const tags = await gitTags(root, moduleName);
+    if (tags.length === 0) {
+        _actions_core__WEBPACK_IMPORTED_MODULE_7__.info('No tagged version, skipping.');
+        continue;
+    }
     const latest = semver__WEBPACK_IMPORTED_MODULE_5__.rsort(tags)[0];
     _actions_core__WEBPACK_IMPORTED_MODULE_7__.info(`Latest version: ${latest}`);
     const commits = await commitsSince(root, moduleName, latest);

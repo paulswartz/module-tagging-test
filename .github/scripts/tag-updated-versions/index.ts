@@ -61,6 +61,9 @@ function bumpType (commit: Commit): 'major' | 'minor' | 'patch' | null {
 async function gitTags (root: string, moduleName: string): Promise<string[]> {
   const ls = await exec(`git tag -l "${moduleName}/*"`,
     { cwd: root })
+  if (ls.stdout === '') {
+    return []
+  }
   return ls.stdout.trimEnd().split('\n').map((t) => t.slice(moduleName.length + 1))
 }
 
@@ -109,6 +112,10 @@ for (const moduleName of await moduleNames(root)) {
   core.startGroup(`Looking at ${moduleName}`)
 
   const tags = await gitTags(root, moduleName)
+  if (tags.length === 0) {
+    core.info('No tagged version, skipping.')
+    continue
+  }
   const latest = semver.rsort(tags)[0]
   core.info(`Latest version: ${latest}`)
 
