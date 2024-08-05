@@ -6,7 +6,7 @@ This module has been tested by Kris.
 
 This module has also been tested by Ian.
 
-I need to add another commit to actually push the version since my first attempt was a no-op.
+It's possible that GitHub ignores the PR description when there's only one commit. But will it use the PR description when there are 2 commits?
 
 ## Versions
 
