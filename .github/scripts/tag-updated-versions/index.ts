@@ -43,7 +43,7 @@ async function createRelease (moduleName: string, version: string, commits: Comm
 }
 function bumpType (commit: Commit): 'major' | 'minor' | 'patch' | null {
   const commitType = commit.type ?? ''
-  if (commitType.endsWith('!')) {
+  if ((commit.header ?? '').includes('!:')) {
     return 'major'
   }
   if (commit.notes.filter((n) => ['BREAKING CHANGE'].includes(n.title)).length > 0) {

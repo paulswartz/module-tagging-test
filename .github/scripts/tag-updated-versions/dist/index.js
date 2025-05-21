@@ -32297,9 +32297,9 @@ async function createRelease(moduleName, version, commits) {
     return null;
 }
 function bumpType(commit) {
-    var _a;
+    var _a, _b;
     const commitType = (_a = commit.type) !== null && _a !== void 0 ? _a : '';
-    if (commitType.endsWith('!')) {
+    if (((_b = commit.header) !== null && _b !== void 0 ? _b : '').includes('!:')) {
         return 'major';
     }
     if (commit.notes.filter((n) => ['BREAKING CHANGE'].includes(n.title)).length > 0) {
